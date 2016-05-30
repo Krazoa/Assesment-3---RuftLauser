@@ -45,7 +45,10 @@ var keyboard = new Keyboard();
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
-//Calculations=========================================================================
+//======================================================================================================================================================
+//Calculations====================================================================================================================================================
+//======================================================================================================================================================
+
 function bound(value, min, max)
 {
     if(value < min)
@@ -84,8 +87,10 @@ function pixleToTile(pixle)
 {
     return Math.floor(pixle/TILE);
 };
+//======================================================================================================================================================
+//GameStates======================================================================================================================================================
+//======================================================================================================================================================
 
-//GameStates===========================================================================
 function runGamesplash(deltaTime)
 {
     Splash_timer -=deltaTime
@@ -104,9 +109,15 @@ function runGamesplash(deltaTime)
         Gamestate = Gamestate_reset;
     }
 }
+var test_timer = 10
 function runGameplay(deltaTime)
 {
-  Gamestate = Gamestate_win;
+  test_timer -=deltaTime;
+  drawMap();
+  if(test_timer <= 0)
+  {
+      Gamestate = Gamestate_win;
+  }
 }
 
 function runGamevalreset(deltaTime)
@@ -141,7 +152,6 @@ function runGameWin(deltaTime)
 
 function runGameover(deltaTime)
 {
-    player.isAlive = false;
 
     context.fillStyle = "#ffffff";
     context.font = "24px Arial";
@@ -196,53 +206,58 @@ function runGamereset(deltaTime)
         Enterstate = 0;
     }
 }
-//Other Fuctions=======================================================================
-// function drawMap()
-// {
-//     var startX = -1;
-//     var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
-//     var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
-//     var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
+//======================================================================================================================================================
+//Other Fuctions==================================================================================================================================================
+//======================================================================================================================================================
+
+function drawMap()
+{
+    //Side Scroll
+    // var startX = -1;
+    // var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
+    // var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
+    // var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
     
-//     //move the map when the player moves too far to the lefr or right.
-//     startX = tileX - Math.floor(maxTiles / 2);
-//     if(startX < -1)
-//     {
-//         startX = 0;
-//         offsetX = 0;
-//     }
-//     if(startX > MAP.tw - maxTiles)
-//     {
-//         startX = MAP.tw - maxTiles + 1;
-//         offsetX = TILE;
-//     }
+    // //move the map when the player moves too far to the lefr or right.
+    // startX = tileX - Math.floor(maxTiles / 2);
+    // if(startX < -1)
+    // {
+    //     startX = 0;
+    //     offsetX = 0;
+    // }
+    // if(startX > MAP.tw - maxTiles)
+    // {
+    //     startX = MAP.tw - maxTiles + 1;
+    //     offsetX = TILE;
+    // }
     
-//     worldOffsetX = startX * TILE + offsetX;
+    // worldOffsetX = startX * TILE + offsetX;
     
-//     for(var layeridx=0; layeridx<LAYER_COUNT; layeridx++)
-//     {
-//         // var Idx = 0;
-//         //for each y layer, if y is less than total y layers then plus 1 to y
-//         for(var y = 0; y<level1.layers[layeridx].height; y++)
-//         {
-//             var Idx = y * level1.layers[layeridx].width + startX;
-//             //for each x layer, if y is less than total x layers then plus 1 to x
-//             for(var x = startX; x < startX + maxTiles; x++)
-//             {
-//                 //do check
-//                 if(level1.layers[layeridx].data[Idx] !=0 )
-//                 {
-//                     //1 = tile, 0 = no tile
-//                     var tileIndex = level1.layers[layeridx].data[Idx] - 1;
-//                     var sx = TILESET_PADDING + (tileIndex%TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
-//                     var sy = TILESET_PADDING + (Math.floor(tileIndex/TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-//                     context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, (x - startX)*TILE - offsetX, (y - 1)*TILE, TILESET_TILE, TILESET_TILE);
-//                 }
-//                 Idx++;
-//             }
-//         }
-//     }
-// }
+    //Drawing Map
+    for(var layeridx=0; layeridx<LAYER_COUNT; layeridx++)
+    {
+        // var Idx = 0;
+        //for each y layer, if y is less than total y layers then plus 1 to y
+        for(var y = 0; y<level1.layers[layeridx].height; y++)
+        {
+            var Idx = y * level1.layers[layeridx].width + startX;
+            //for each x layer, if y is less than total x layers then plus 1 to x
+            for(var x = startX; x < startX /**+ maxTiles;*/; x++)
+            {
+                //do check
+                if(level1.layers[layeridx].data[Idx] !=0 )
+                {
+                    //1 = tile, 0 = no tile
+                    var tileIndex = level1.layers[layeridx].data[Idx] - 1;
+                    var sx = TILESET_PADDING + (tileIndex%TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
+                    var sy = TILESET_PADDING + (Math.floor(tileIndex/TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
+                    context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, (x - startX)*TILE - offsetX, (y - 1)*TILE, TILESET_TILE, TILESET_TILE);
+                }
+                Idx++;
+            }
+        }
+    }
+}
 
 function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 {
@@ -297,31 +312,32 @@ function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 var cells = [];
 function initialize()
 {
-    // for(var layeridx = 0; layeridx < LAYER_COUNT; layeridx++)
-    // {
-    //     cells[layeridx] = [];
-    //     var Idx = 0;
-    //     for(var y = 0; y < level1.layers[layeridx].height; y++)
-    //     {
-    //         cells[layeridx][y] = [];
-    //         for(var x = 0; x < level1.layers[layeridx].width; x++)
-    //         {
-    //             if(level1.layers[layeridx].data[Idx] !=0)
-    //             {
-    //                 cells[layeridx][y][x] = 1; //create collision on cell which the player is colliding with
-    //                 cells[layeridx][y-1][x] = 1; //create collision with the cell below colliding cell
-    //                 cells[layeridx][y-1][x+1] = 1; //create collision with cell below, right with the colliding cell
-    //                 cells[layeridx][y][x+1] = 1; //create collision with one cell to the right cell which the player is colliding with
-    //             }
-    //             else if(cells[layeridx][y][x] != 1)
-    //             {
-    //                 // if there is no collision calculated and cell has not been given a value, set it to 0 (no collision)
-    //                 cells[layeridx][y][x] = 0;
-    //             }
-    //             Idx++;
-    //         }
-    //     }
-    // }
+    //Player Collision
+    for(var layeridx = 0; layeridx < LAYER_COUNT; layeridx++)
+    {
+        cells[layeridx] = [];
+        var Idx = 0;
+        for(var y = 0; y < level1.layers[layeridx].height; y++)
+        {
+            cells[layeridx][y] = [];
+            for(var x = 0; x < level1.layers[layeridx].width; x++)
+            {
+                if(level1.layers[layeridx].data[Idx] !=0)
+                {
+                    cells[layeridx][y][x] = 1; //create collision on cell which the player is colliding with
+                    cells[layeridx][y-1][x] = 1; //create collision with the cell below colliding cell
+                    cells[layeridx][y-1][x+1] = 1; //create collision with cell below, right with the colliding cell
+                    cells[layeridx][y][x+1] = 1; //create collision with one cell to the right cell which the player is colliding with
+                }
+                else if(cells[layeridx][y][x] != 1)
+                {
+                    // if there is no collision calculated and cell has not been given a value, set it to 0 (no collision)
+                    cells[layeridx][y][x] = 0;
+                }
+                Idx++;
+            }
+        }
+    }
     
     // cells[LAYER_OBJECT_TRIGGERS] = [];
     // Idx = 0;
