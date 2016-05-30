@@ -3,7 +3,6 @@ var context = canvas.getContext("2d");
 
 var startFrameMillis = Date.now();
 var endFrameMillis = Date.now();
-
 // This function will return the time in seconds since the function 
 // was last called
 // You should only call this function once per frame
@@ -29,10 +28,6 @@ function getDeltaTime()
 
 //-------------------- Don't modify anything above here
 
-var SCREEN_WIDTH = canvas.width;
-var SCREEN_HEIGHT = canvas.height;
-
-
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
 // constant speed)
@@ -40,130 +35,52 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
-// load an image to draw
-var chuckNorris = document.createElement("img");
-chuckNorris.src = "hero.png";
+var DEBUG = 1;		// set to 0 to turn off drawing debug information
 
+var SCREEN_WIDTH = canvas.width;
+var SCREEN_HEIGHT = canvas.height;
 
-var tileset = document.createElement("img");
-tileset.src = "tileset.png";
+var keyboard = new Keyboard();
 
-
-function bound(value, min, max)
-{
-    if(value < min)
-        return min;
-    if(value > max)
-        return max;
-    return value;
-};
-
-function cellAtPixelCoord(layer, x,y)
-{
-    if(x<0 || x>SCREEN_WIDTH || y<0)
-        return 1;
-        //let the player drop
-    else if(y>SCREEN_HEIGHT)
-        return 0;
-    return cellAtTileCoord(layer, p2t(x), p2t(y));
-};
-
-function cellAtTileCoord(layer, tx, ty)
-{
-    if(tx<0 || tx>=MAP.tw || ty<0)
-        return 1;
-        //let the player drop
-    else if(ty>=MAP.th)
-        return 0;
-    return cells[layer][ty][tx];
-};
-
-function tileToPixle(tile)
-{
-    return tile * TILE;
-};
-
-function pixleToTile(pixle)
-{
-    return Math.floor(pixle/TILE);
-};
-
-//GameStates
-function runGamesplash(deltaTime)
-{
-    Splash_timer -=deltaTime
-    
-    // splash.draw();
-    
-    //Setting name
-    context.fillStyle = "#ffffff";
-    context.font= "12px Arial";
-    context.fillText("[Insert Names Here]", 2, SCREEN_HEIGHT - 2)
-    
-    context.fillStyle = "#ffffff";
-    context.font = "60px Agency FB";
-    context.fillText("[Insert Stuff Here]", SCREEN_WIDTH/2 - 190, SCREEN_HEIGHT/2)
-    
-    if(Splash_timer <= 0)
-    {
-        Gamestate = Gamestate_reset;
-    }
-}
-function runGameplay(deltaTime)
-{
-    
-}
-
-
-function runGamevalreset(deltaTime)
-{
-
-}
-function runGamedeath(deltaTime)
-{
-    
-}
-
-function runGameWin(deltaTime)
-{
-
-}
-
-function runGameover(deltaTime)
-{
-
-}
-function runGamereset(deltaTime)
-{
-
-}
-
-function drawMap()
-{
-    
-}
-
-function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
-{
-	if (y2 + h2 < y1 ||x2 + w2 < x1 || x2 > x1 + w1 || y2 > y1 + h1)
-	{
-		return false;
-	}
-	return true;
-}
-
-function initialize()
-{
-    
-}
+var burstEmitter = createBurstEmitter("spark.png", SCREEN_WIDTH/4, SCREEN_HEIGHT-100);
+var fireEmitter = createFireEmitter("fire.png", (SCREEN_WIDTH/4)*3, SCREEN_HEIGHT-100);
+var starEmitter = createFlyingStarsEmitter("star.png", SCREEN_WIDTH/2, 250);
 
 function run()
 {
-    
+	context.fillStyle = "#ccc";		
+	context.fillRect(0, 0, canvas.width, canvas.height);
+	
+	var deltaTime = getDeltaTime();
+	
+	burstEmitter.update(deltaTime);
+	fireEmitter.update(deltaTime);
+	starEmitter.update(deltaTime);
+	
+	
+	starEmitter.draw();
+	burstEmitter.draw();
+	fireEmitter.draw();
+			
+	if(DEBUG == 1)
+	{	
+			// update the frame counter 
+		fpsTime += deltaTime;
+		fpsCount++;
+		if(fpsTime >= 1)
+		{
+			fpsTime -= 1;
+			fps = fpsCount;
+			fpsCount = 0;
+		}		
+		
+		// draw the FPS
+		context.fillStyle = "#f00";
+		context.font="14px Arial";
+		context.fillText("FPS: " + fps, 5, 20, 100);
+	}
 }
 
-
-initialize();
 
 //-------------------- Don't modify anything below here
 
