@@ -40,6 +40,7 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
+var player = new Player();
 var keyboard = new Keyboard();
 
 var tileset = document.createElement("img");
@@ -109,21 +110,30 @@ function runGamesplash(deltaTime)
         Gamestate = Gamestate_reset;
     }
 }
-var test_timer = 10
+// var test_timer = 10
 function runGameplay(deltaTime)
 {
-  test_timer -=deltaTime;
+//   test_timer -=deltaTime;
+  player.update(deltaTime);
   drawMap();
-  if(test_timer <= 0)
-  {
-      Gamestate = Gamestate_win;
-  }
+  player.draw();
+  
+//   context.fillStyle = "#ffffff";
+//   context.font= "12px Arial";
+//   context.fillText("Test ends in: " + test_timer, 2, SCREEN_HEIGHT - 2)
+//   if(test_timer <= 0)
+//   {
+//       Gamestate = Gamestate_win;
+//   }
 }
 
 function runGamevalreset(deltaTime)
 {
    reset_timer = 3;
    Gamestate = Gamestate_reset
+   
+   //Testing variables reset
+//    test_timer = 10;
 }
 function runGamedeath(deltaTime)
 {
@@ -213,25 +223,25 @@ function runGamereset(deltaTime)
 function drawMap()
 {
     //Side Scroll
-    // var startX = -1;
-    // var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
-    // var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
-    // var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
+    var startX = -1;
+    var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
+    var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
+    var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
     
-    // //move the map when the player moves too far to the lefr or right.
-    // startX = tileX - Math.floor(maxTiles / 2);
-    // if(startX < -1)
-    // {
-    //     startX = 0;
-    //     offsetX = 0;
-    // }
-    // if(startX > MAP.tw - maxTiles)
-    // {
-    //     startX = MAP.tw - maxTiles + 1;
-    //     offsetX = TILE;
-    // }
+    //move the map when the player moves too far to the lefr or right.
+    startX = tileX - Math.floor(maxTiles / 2);
+    if(startX < -1)
+    {
+        startX = 0;
+        offsetX = 0;
+    }
+    if(startX > MAP.tw - maxTiles)
+    {
+        startX = MAP.tw - maxTiles + 1;
+        offsetX = TILE;
+    }
     
-    // worldOffsetX = startX * TILE + offsetX;
+    worldOffsetX = startX * TILE + offsetX;
     
     //Drawing Map
     for(var layeridx=0; layeridx<LAYER_COUNT; layeridx++)
@@ -339,27 +349,27 @@ function initialize()
         }
     }
     
-    // cells[LAYER_OBJECT_TRIGGERS] = [];
-    // Idx = 0;
-    // for(var y = 0; y < level1.layers[LAYER_OBJECT_TRIGGERS].height; y++)
-    // {
-    //     cells[LAYER_OBJECT_TRIGGERS][y] = [];
-    //     for(var x = 0; x < level1.layers[LAYER_OBJECT_TRIGGERS].width; x++)
-    //     {
-    //         if(level1.layers[LAYER_OBJECT_TRIGGERS].data[Idx] != 0)
-    //         {
-    //             cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
-    //             cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
-    //             cells[LAYER_OBJECT_TRIGGERS][y-1][x+1] = 1;
-    //             cells[LAYER_OBJECT_TRIGGERS][y][x+1] = 1;
-    //         }
-    //         else if(cells[LAYER_OBJECT_TRIGGERS][y][x] != 1)
-    //         {
-    //             cells[LAYER_OBJECT_TRIGGERS][y][x] = 0;
-    //         }
-    //         Idx++;
-    //     }
-    // }
+    cells[LAYER_OBJECT_TRIGGERS] = [];
+    Idx = 0;
+    for(var y = 0; y < level1.layers[LAYER_OBJECT_TRIGGERS].height; y++)
+    {
+        cells[LAYER_OBJECT_TRIGGERS][y] = [];
+        for(var x = 0; x < level1.layers[LAYER_OBJECT_TRIGGERS].width; x++)
+        {
+            if(level1.layers[LAYER_OBJECT_TRIGGERS].data[Idx] != 0)
+            {
+                cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
+                cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
+                cells[LAYER_OBJECT_TRIGGERS][y-1][x+1] = 1;
+                cells[LAYER_OBJECT_TRIGGERS][y][x+1] = 1;
+            }
+            else if(cells[LAYER_OBJECT_TRIGGERS][y][x] != 1)
+            {
+                cells[LAYER_OBJECT_TRIGGERS][y][x] = 0;
+            }
+            Idx++;
+        }
+    }
     
     // addEnemies();
     
