@@ -70,9 +70,6 @@ var lives = 3;
 var life = [];
 //Misc Key Values
 var Enterstate = false;
-//Debug Key Values
-var Cheat = false;
-var TriggerHurt = false;
 //Enemy Variables
 var ENEMY_MAXDX = METRE * 5;
 var ENEMY_ACCEL = ENEMY_MAXDX * 2;
@@ -81,10 +78,9 @@ var enemies = [];   //Array bracket holding all the enemies in the map
 var musicBackground;
 var sfxFire;
 var sfxPlayerDie;
-//Array of Bulletz
+//Setting the damage of the bullets
+var bullet_dmg = 40;
+//Array of Bullets
 var bullets = [];
-//Player states
-var Playerstate_RunJump = 0;
-var Playerstate_Climb = 1;
-//Defult start player state
-var Playerstate = Playerstate_RunJump;
+//Item array
+var Items = []; //Array braket that contains all the items on screen.

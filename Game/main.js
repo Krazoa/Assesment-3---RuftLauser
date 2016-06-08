@@ -223,25 +223,25 @@ function runGamereset(deltaTime)
 function drawMap()
 {
     //Side Scroll
-    var startX = -1;
-    var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
-    var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
-    var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
+    // var startX = -1;
+    // var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
+    // var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
+    // var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
     
     //move the map when the player moves too far to the lefr or right.
-    startX = tileX - Math.floor(maxTiles / 2);
-    if(startX < -1)
-    {
-        startX = 0;
-        offsetX = 0;
-    }
-    if(startX > MAP.tw - maxTiles)
-    {
-        startX = MAP.tw - maxTiles + 1;
-        offsetX = TILE;
-    }
+    // startX = tileX - Math.floor(maxTiles / 2);
+    // if(startX < -1)
+    // {
+    //     startX = 0;
+    //     offsetX = 0;
+    // }
+    // if(startX > MAP.tw - maxTiles)
+    // {
+    //     startX = MAP.tw - maxTiles + 1;
+    //     offsetX = TILE;
+    // }
     
-    worldOffsetX = startX * TILE + offsetX;
+    // worldOffsetX = startX * TILE + offsetX;
     
     //Drawing Map
     for(var layeridx=0; layeridx<LAYER_COUNT; layeridx++)

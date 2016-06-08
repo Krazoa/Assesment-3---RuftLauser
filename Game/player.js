@@ -25,7 +25,7 @@ this.image.src = "ship.png";
 Player.prototype.draw = function() 
 {  
 context.save();
-context.translate(this.position.x, this.position.y)
+// context.translate(this.position.x, this.position.y)
 context.rotate(this.rotation);
 context.drawImage(this.image, this.position.x, this.position.y); 
 context.restore();
@@ -41,11 +41,11 @@ Player.prototype.update = function(deltaTime)
     var s = Math.sin(this.rotation);
 	var c = Math.cos(this.rotation);
     
-    console.log(this.position)
-    console.log(this.rotation)
+    // console.log(this.position)
+    // console.log(this.rotation)
     
-    var xDir = (this.velocity.x * c) - (this.velocity.y * s);
-	var yDir = (this.velocity.x * s) + (this.velocity.y * c);
+    var xDir = (this.directionX * c) - (this.directionY * s);
+	var yDir = (this.directionX * s) + (this.directionY * c);
     var VelX = xDir * this.speed;
     var VelY = yDir * this.speed;
     
@@ -55,15 +55,18 @@ Player.prototype.update = function(deltaTime)
     this.rotation += this.angularDirection * 2;
     
     
-    
     if(keyboard.isKeyDown(keyboard.KEY_UP) == true)
     {
         this.directionY = 4;
     }
-    // if(keyboard.isKeyDown(Keyboard.KEY_UP) == false)
-    // {
-
-    // }
+    else if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true)
+    {
+        this.directionY = -4;
+    }
+    else
+    {
+        this.directionY = 0;
+    }
     
     if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
     {
