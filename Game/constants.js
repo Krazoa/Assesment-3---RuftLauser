@@ -59,8 +59,6 @@ var Splash_timer = 2;
 var reset_timer = 3;
 //Score counter
 var score = 0;
-//Setting player life
-var player_hp = 200;
 //Kill counter
 var kills = 0;
 //Damage Cooldown
@@ -84,3 +82,9 @@ var bullet_dmg = 40;
 var bullets = [];
 //Item array
 var Items = []; //Array braket that contains all the items on screen.
+//In-game Timer
+var GameTimer = 0;
+//Explosion Array
+var explosions = []
+//Clouds Array
+var clouds = []

@@ -6,78 +6,70 @@ var SCREEN_HEIGHT = canvas.height;
 
 var Player = function()
 {  
-this.image = document.createElement("img");
-this.position = new Vector2();
-this.position.Set(SCREEN_WIDTH/2, SCREEN_HEIGHT/2) 
-this.velocity = new Vector2();
-this.velocity.x = 0;
-// this.width = 34;
-// this.height = 22;
-this.velocity.y = 0;
-this.directionX = 0;
-this.directionY = 0;
-this.angularDirection = 0;
-this.rotation = 0; 
-this.speed = 0;
-this.image.src = "ship.png";
+    this.image = document.createElement("img");
+    this.position = new Vector2();
+    this.position.Set(SCREEN_WIDTH / 2, 415)
+    this.velocity = new Vector2();
+    this.velocity.x = 0;
+    this.velocity.y = 0;
+    this.width = 34;
+    this.height = 22;
+    this.speed = 0;
+    this.image.src = "ship.png";
+    this.isDead = false;
 }
 
 Player.prototype.draw = function() 
 {  
-context.save();
-// context.translate(this.position.x, this.position.y)
-context.rotate(this.rotation);
-context.drawImage(this.image, this.position.x, this.position.y); 
-context.restore();
+    context.save();
+    context.drawImage(this.image, this.position.x, this.position.y);
+    context.restore();
 } 
 
 Player.prototype.update = function(deltaTime)
 {
-    // this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
-    // this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
-    // this.velocity.y = bound(this.velocity.y + (deltaTime * ddy), -MAXDY, MAXDY);
-    // this.velocity.x = bound(this.velocity.x + (deltaTime * ddx), -MAXDX, MAXDX);
-    
-    var s = Math.sin(this.rotation);
-	var c = Math.cos(this.rotation);
-    
-    // console.log(this.position)
-    // console.log(this.rotation)
-    
-    var xDir = (this.directionX * c) - (this.directionY * s);
-	var yDir = (this.directionX * s) + (this.directionY * c);
-    var VelX = xDir * this.speed;
-    var VelY = yDir * this.speed;
-    
-    this.position.x += VelX * deltaTime;
-    this.position.y += VelY * deltaTime;
-    
-    this.rotation += this.angularDirection * 2;
-    
-    
     if(keyboard.isKeyDown(keyboard.KEY_UP) == true)
     {
-        this.directionY = 4;
+        this.position.y -= 1.5
     }
     else if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true)
     {
-        this.directionY = -4;
-    }
-    else
-    {
-        this.directionY = 0;
+        this.position.y += 1.5
     }
     
     if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
     {
-        this.angularDirection = -1;
+        this.position.x -= 1.5
     }
     else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true)
     {
-        this.angularDirection = 1;
+        this.position.x += 1.5
     }
-    else
+    
+    if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
     {
-        this.angularDirection = 0;
+        var cooldown = 3
+        cooldown -= deltaTime
+        if(cooldown <= 0)
+        {
+           //shoot bullet 
+        }
     }
+    
+    // if(this.position.x > SCREEN_WIDTH)
+    // {
+    //     this.position.x = SCREEN_WIDTH + 3
+    // }
+    // if(this.position.x < SCREEN_WIDTH )
+    // {
+    //     this.position.x = SCREEN_WIDTH - 3
+    // }
+    // if(this.position.y > SCREEN_HEIGHT)
+    // {
+    //     this.position.y = SCREEN_HEIGHT + 3
+    // }
+    // if(this.position.y < SCREEN_HEIGHT)
+    // {
+    //     this.position.y = SCREEN_HEIGHT - 3
+    // }
 }

@@ -43,8 +43,15 @@ var fpsTime = 0;
 var player = new Player();
 var keyboard = new Keyboard();
 
-var tileset = document.createElement("img");
-tileset.src = "tileset.png";
+
+var player = new Player();
+var splash = new Splash();
+var HpHud = new HpHud();
+var ScoreHud = new ScoreHud();
+var TitleCloud = new TitleCloud(SCREEN_WIDTH/2 - 260, SCREEN_HEIGHT/2 - 110);
+// var Background = new Background();
+var lifeIcon = new lifeIcon();
+var keyboard = new Keyboard();
 
 //======================================================================================================================================================
 //Calculations====================================================================================================================================================
@@ -97,13 +104,13 @@ function runGamesplash(deltaTime)
     Splash_timer -=deltaTime
     
     //Setting name
-    context.fillStyle = "#ffffff";
-    context.font= "12px Arial";
-    context.fillText("Group 7", 2, SCREEN_HEIGHT - 2)
+    context.fillStyle = "#000000";
+    context.font= "12px Agency FB";
+    context.fillText("Group 7 (Jordan and Michele)", 2, SCREEN_HEIGHT - 2)
     
-    context.fillStyle = "#ffffff";
+    context.fillStyle = "#0000000";
     context.font = "60px Agency FB";
-    context.fillText("Prototype Testing Framework", SCREEN_WIDTH/2 - 190, SCREEN_HEIGHT/2)
+    context.fillText("Group 7", SCREEN_WIDTH/2 - 190, SCREEN_HEIGHT/2)
     
     if(Splash_timer <= 0)
     {
@@ -114,9 +121,46 @@ function runGamesplash(deltaTime)
 function runGameplay(deltaTime)
 {
 //   test_timer -=deltaTime;
-  player.update(deltaTime);
-  drawMap();
-  player.draw();
+
+    if(enemies.length > 1)
+    {
+        for(var i=0; i<enemies.length; i++)
+        {
+            enemies[i].update(deltaTime);
+            //add collision check
+            enemies[i].draw();
+        }
+    }
+    
+    if(clouds.length > 1)
+    {
+        for(var i=0; i<clouds.length; i++)
+        {
+            clouds[i].update(deltaTime);
+            clouds[i].draw();
+        }
+    }
+    addClouds(deltaTime)
+    player.update(deltaTime);
+    player.draw();
+    HpHud.draw();
+    ScoreHud.draw();
+    DrawScore();
+    lifeIcon.update(deltaTime);
+    lifeIcon.draw();
+    addEnemies(deltaTime);
+    HUDTimer(deltaTime, GameTimer)
+  
+    if(keyboard.isKeyDown(keyboard.KEY_S) == true)
+    {
+        var g = new Explosion(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        explosions.push(g);
+    }
+    
+    if (lives == 1) 
+    {
+        Gamestate = Gamestate_over;
+    }
   
 //   context.fillStyle = "#ffffff";
 //   context.font= "12px Arial";
@@ -142,16 +186,7 @@ function runGamedeath(deltaTime)
 
 function runGameWin(deltaTime)
 {
-    Enterstate = false;
-    context.fillStyle = "#ffffff";
-    context.font = "26px Arial";
-    context.fillText("Test Complete", 100, SCREEN_HEIGHT/2 - 50)
-    
-    context.fillStyle = "#ffffff";
-    context.font = "25px Arial";
-    context.fillText("Test Complete", 100, SCREEN_HEIGHT/2)
-
-    context.fillStyle = "#ffffff";
+    context.fillStyle = "#000000";
     context.font = "24px Arial";
     context.fillText("Press R to go back to restart.", 100, SCREEN_HEIGHT/2 + 50)
     if(keyboard.isKeyDown(keyboard.KEY_R) == true)
@@ -163,8 +198,8 @@ function runGameWin(deltaTime)
 function runGameover(deltaTime)
 {
 
-    context.fillStyle = "#ffffff";
-    context.font = "24px Arial";
+    context.fillStyle = "#000000";
+    context.font = "24px Agency FB";
     context.fillText("Press R to restart.", 100, SCREEN_HEIGHT/2 + 50)
     if(keyboard.isKeyDown(keyboard.KEY_R) == true)
     {
@@ -173,9 +208,21 @@ function runGameover(deltaTime)
 }
 function runGamereset(deltaTime)
 {
-    context.fillStyle = "#ffffff";
-    context.font = "25px Arial";
-    context.fillText("Press ENTER to begin test", 100, 230)
+    
+    context.fillStyle = "#000000";
+    context.font = "25px Agency FB";
+    context.fillText("To Begin:", SCREEN_WIDTH/2 - 80, SCREEN_WIDTH/2)
+    
+    TitleCloud.draw();
+    
+        context.fillStyle = "#0000000";
+    context.font = "60px Agency FB";
+    context.fillText("Skies of Rcadia", SCREEN_WIDTH/2 - 190, SCREEN_HEIGHT/2)
+    
+    context.fillStyle = "#000000";
+    context.font = "25px Agency FB";
+    context.fillText("Press 'ENTER'", SCREEN_WIDTH/2 - 100, SCREEN_WIDTH/2 + 30)
+    
     if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
     {
         Enterstate = true;
@@ -206,9 +253,9 @@ function runGamereset(deltaTime)
             RoundReset_timer = 0;
         }
         
-        context.fillStyle = "#ffffff";
-        context.font = "24px Arial";
-        context.fillText("Prepare for testing in " + RoundReset_timer + " seconds!!!", 100, 300)
+        context.fillStyle = "#000000";
+        context.font = "24px Agency FB";
+        context.fillText("Game starts " + RoundReset_timer + " seconds", SCREEN_WIDTH/2 - 130, SCREEN_WIDTH/2 + 50)
     }
     if(RoundReset_timer <= 0)
     {
@@ -220,55 +267,6 @@ function runGamereset(deltaTime)
 //Other Fuctions==================================================================================================================================================
 //======================================================================================================================================================
 
-function drawMap()
-{
-    //Side Scroll
-    // var startX = -1;
-    // var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2; //max no. of tiles before scrolling occurs
-    // var tileX = pixleToTile(player.position.x); //convert player position on which tile and converts into tile
-    // var offsetX = TILE + Math.floor(player.position.x%TILE); //find offset of the player from the tile they stand on
-    
-    //move the map when the player moves too far to the lefr or right.
-    // startX = tileX - Math.floor(maxTiles / 2);
-    // if(startX < -1)
-    // {
-    //     startX = 0;
-    //     offsetX = 0;
-    // }
-    // if(startX > MAP.tw - maxTiles)
-    // {
-    //     startX = MAP.tw - maxTiles + 1;
-    //     offsetX = TILE;
-    // }
-    
-    // worldOffsetX = startX * TILE + offsetX;
-    
-    //Drawing Map
-    for(var layeridx=0; layeridx<LAYER_COUNT; layeridx++)
-    {
-        // var Idx = 0;
-        //for each y layer, if y is less than total y layers then plus 1 to y
-        for(var y = 0; y<level1.layers[layeridx].height; y++)
-        {
-            var Idx = y * level1.layers[layeridx].width + startX;
-            //for each x layer, if y is less than total x layers then plus 1 to x
-            for(var x = startX; x < startX /**+ maxTiles;*/; x++)
-            {
-                //do check
-                if(level1.layers[layeridx].data[Idx] !=0 )
-                {
-                    //1 = tile, 0 = no tile
-                    var tileIndex = level1.layers[layeridx].data[Idx] - 1;
-                    var sx = TILESET_PADDING + (tileIndex%TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
-                    var sy = TILESET_PADDING + (Math.floor(tileIndex/TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-                    context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, (x - startX)*TILE - offsetX, (y - 1)*TILE, TILESET_TILE, TILESET_TILE);
-                }
-                Idx++;
-            }
-        }
-    }
-}
-
 function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 {
 	if (y2 + h2 < y1 ||x2 + w2 < x1 || x2 > x1 + w1 || y2 > y1 + h1)
@@ -278,101 +276,48 @@ function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 	return true;
 }
 
-// function RunBulletChecks(deltaTime)
-// {
-//     var hit = false;
-//     for(var i=0; i<bullets.length; i++)
-//     {
-//         bullets[i].update(deltaTime);
-//         if(bullets[i].position.x - worldOffsetX < 0 || bullets[i].position.s - worldOffsetX > SCREEN_WIDTH)
-//         {
-//             hit = true;
-//         }
+function RunBulletChecks(deltaTime)
+{
+    var hit = false;
+    for(var i=0; i<bullets.length; i++)
+    {
+        bullets[i].update(deltaTime);
+        if(bullets[i].position.x < 0 || bullets[i].position.s > SCREEN_WIDTH)
+        {
+            hit = true;
+        }
         
-//         //else hit = false (In case hit is somehow stuck on true after being triggered)
+        //else hit = false (In case hit is somehow stuck on true after being triggered)
         
-//         for(var j=0; j<enemies.length; j++)
-//         {
-//             if(intersects(bullets[i].position.x, bullets[i].position.y, TILE, TILE, enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
-//             {
-//                 //remove the enemy
-//                 enemies.splice(j, 1);
-//                 hit = true;
-//                 //add kill to score/kill counter
-//                 score += 100;
-//                 kills += 1;
-//                 break;
-//             }
-//         }
-//         if(hit == true)
-//         {
-//             //remove the colliding bullet
-//             bullets.splice(i, 1);
-//             break;
-//         }
-//         if(bullets[i].x > SCREEN_WIDTH)
-//         {
-//             bullet.splice(i, 1);
-//         }
-//         bullets[i].draw();
-//     }   
-// }
+        for(var j=0; j<enemies.length; j++)
+        {
+            if(intersects(bullets[i].position.x, bullets[i].position.y, TILE, TILE, enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+            {
+                //remove the enemy
+                enemies.splice(j, 1);
+                hit = true;
+                //add kill to score/kill counter
+                score += 100;
+                kills += 1;
+                break;
+            }
+        }
+        if(hit == true)
+        {
+            //remove the colliding bullet
+            bullets.splice(i, 1);
+            break;
+        }
+        if(bullets[i].x > SCREEN_WIDTH)
+        {
+            bullet.splice(i, 1);
+        }
+        
+    }   
+}
 
-//Creating a cells array
-var cells = [];
 function initialize()
 {
-    //Player Collision
-    for(var layeridx = 0; layeridx < LAYER_COUNT; layeridx++)
-    {
-        cells[layeridx] = [];
-        var Idx = 0;
-        for(var y = 0; y < level1.layers[layeridx].height; y++)
-        {
-            cells[layeridx][y] = [];
-            for(var x = 0; x < level1.layers[layeridx].width; x++)
-            {
-                if(level1.layers[layeridx].data[Idx] !=0)
-                {
-                    cells[layeridx][y][x] = 1; //create collision on cell which the player is colliding with
-                    cells[layeridx][y-1][x] = 1; //create collision with the cell below colliding cell
-                    cells[layeridx][y-1][x+1] = 1; //create collision with cell below, right with the colliding cell
-                    cells[layeridx][y][x+1] = 1; //create collision with one cell to the right cell which the player is colliding with
-                }
-                else if(cells[layeridx][y][x] != 1)
-                {
-                    // if there is no collision calculated and cell has not been given a value, set it to 0 (no collision)
-                    cells[layeridx][y][x] = 0;
-                }
-                Idx++;
-            }
-        }
-    }
-    
-    cells[LAYER_OBJECT_TRIGGERS] = [];
-    Idx = 0;
-    for(var y = 0; y < level1.layers[LAYER_OBJECT_TRIGGERS].height; y++)
-    {
-        cells[LAYER_OBJECT_TRIGGERS][y] = [];
-        for(var x = 0; x < level1.layers[LAYER_OBJECT_TRIGGERS].width; x++)
-        {
-            if(level1.layers[LAYER_OBJECT_TRIGGERS].data[Idx] != 0)
-            {
-                cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
-                cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
-                cells[LAYER_OBJECT_TRIGGERS][y-1][x+1] = 1;
-                cells[LAYER_OBJECT_TRIGGERS][y][x+1] = 1;
-            }
-            else if(cells[LAYER_OBJECT_TRIGGERS][y][x] != 1)
-            {
-                cells[LAYER_OBJECT_TRIGGERS][y][x] = 0;
-            }
-            Idx++;
-        }
-    }
-    
-    // addEnemies();
-    
     // musicBackground = new Howl({
     //         urls: ["background.ogg"],
     //         loop: true,
@@ -402,40 +347,37 @@ function initialize()
     // // }
 }
 
-function addEnemies()
+function addEnemies(deltaTime)
 {
-    // //adding enemies
-    // Idx = 0;
-    // for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
-    // {
-    //     for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++)
-    //     {
-    //         if(level1.layers[LAYER_OBJECT_ENEMIES].data[Idx] != 0)
-    //         {
-    //             var px = tileToPixle(x);
-    //             var py = tileToPixle(y);
-    //             var e = new Enemy(px, py);
-    //             enemies.push(e);
-    //         }
-    //         Idx++;
-    //     }
-    // }
+    //adding enemies
+    var spawnTime = Math.floor(Math.random() * 78)
+    spawnTime -= deltaTime;
+    if(spawnTime <= 0)
+    {
+        console.log("enemy spawned")
+        var x = Math.floor(Math.random() * (0 + SCREEN_WIDTH))
+        var y = -40
+        var rot = Math.floor(Math.random() * 10)
+        var e = new Enemy(x, y, rot);
+        enemies.push(e);
+    }
 }
-
-function DrawLevelCollisionData(tileLayer, colour) {
-    for (var y = 0; y < level1.layers[tileLayer].height; y++) {
-        for (var x = 0; x < level1.layers[tileLayer].width; x++) {
-            if (cells[tileLayer][y][x] == 1) {
-                context.fillStyle = colour;
-                context.fillRect(TILE * x, TILE * y, TILE, TILE);
-            }
-        }
+function addClouds(deltaTime)
+{
+    var cloudspawnTime = Math.floor(Math.random()*200)
+    cloudspawnTime -=deltaTime;
+    if(cloudspawnTime <= 0)
+    {
+        var x = Math.floor(Math.random() * (0 + SCREEN_WIDTH))
+        var y = -200
+        var c = new Cloud(x, y);
+        clouds.push(c);
     }
 }
 
 function run()
 {
-	context.fillStyle = "#ccc";		
+	context.fillStyle = "#4CA6FF";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
@@ -479,31 +421,7 @@ function run()
         case Gamestate_death:
             runGamedeath(deltaTime);
             break;
-        // case Gamestate_reintial:
-        //     runGameReIntial(deltaTime);
-        //     break;
-    }
-    
-    //Debug Console Logs
-    // console.log(player.velocity.y);
-    // console.log(player.celldown);
-    // console.log(player.tx);
-    // console.log(player.ty);
-    // console.log(player.position);
-    // console.log(player.position.x);
-    // console.log(player.position.y);
-    
-    // Debug Collision Layer Checks
-    // DrawLevelCollisionData(0, "#00ff00");
-    // DrawLevelCollisionData(1, "#0000ff");
-    // DrawLevelCollisionData(2, "#ff0000");
-    // DrawLevelCollisionData(3, "#ff00ff");
-    // DrawLevelCollisionData(4, "#ffff00");
-    	
-    //Debug players collision box
-    // context.fillStyle = "#ffffff";
-    // context.fillRect(player.position.x, player.position.y, TILE, TILE);
-    
+    }  
 }
 
 
