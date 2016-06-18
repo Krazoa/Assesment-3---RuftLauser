@@ -132,6 +132,15 @@ function runGameplay(deltaTime)
         }
     }
     
+    if(bullets.length > 1)
+    {
+        for(var i=0; i<bullets.length; i++)
+        {
+            bullets[i].update(deltaTime);
+            bullets[i].draw();
+        }
+    }
+    
     if(clouds.length > 1)
     {
         for(var i=0; i<clouds.length; i++)
@@ -140,6 +149,7 @@ function runGameplay(deltaTime)
             clouds[i].draw();
         }
     }
+    
     addClouds(deltaTime)
     player.update(deltaTime);
     player.draw();
@@ -149,6 +159,7 @@ function runGameplay(deltaTime)
     lifeIcon.update(deltaTime);
     lifeIcon.draw();
     addEnemies(deltaTime);
+    RunBulletChecks(deltaTime);
     HUDTimer(deltaTime, GameTimer)
   
     if(keyboard.isKeyDown(keyboard.KEY_S) == true)
@@ -175,6 +186,8 @@ function runGamevalreset(deltaTime)
 {
    reset_timer = 3;
    Gamestate = Gamestate_reset
+   lives = 3;
+   GameTimer = 0;
    
    //Testing variables reset
 //    test_timer = 10;
@@ -278,6 +291,9 @@ function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 
 function RunBulletChecks(deltaTime)
 {
+    
+    if (bullets.length > 1) 
+    {
     var hit = false;
     for(var i=0; i<bullets.length; i++)
     {
@@ -287,11 +303,10 @@ function RunBulletChecks(deltaTime)
             hit = true;
         }
         
-        //else hit = false (In case hit is somehow stuck on true after being triggered)
         
         for(var j=0; j<enemies.length; j++)
         {
-            if(intersects(bullets[i].position.x, bullets[i].position.y, TILE, TILE, enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+            if(intersects(bullets[i].position.x, bullets[i].position.y, bullets[i].width, bullets[i].height, enemies[j].position.x, enemies[j].position.y, enemies[j].width, enemies[j].height) == true)
             {
                 //remove the enemy
                 enemies.splice(j, 1);
@@ -314,6 +329,7 @@ function RunBulletChecks(deltaTime)
         }
         
     }   
+    }
 }
 
 function initialize()
@@ -354,7 +370,7 @@ function addEnemies(deltaTime)
     spawnTime -= deltaTime;
     if(spawnTime <= 0)
     {
-        console.log("enemy spawned")
+        // console.log("enemy spawned")
         var x = Math.floor(Math.random() * (0 + SCREEN_WIDTH))
         var y = -40
         var rot = Math.floor(Math.random() * 10)
@@ -370,7 +386,7 @@ function addClouds(deltaTime)
     {
         var x = Math.floor(Math.random() * (0 + SCREEN_WIDTH))
         var y = -200
-        var c = new Cloud(x, y);
+        var c = new Cloud(x, y, 180);
         clouds.push(c);
     }
 }

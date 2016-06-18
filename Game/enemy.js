@@ -9,7 +9,8 @@ var Enemy = function(x, y, rot)
 this.image = document.createElement("img");
 this.velocity = new Vector2()
 this.velocity.Set(0, 0)
-this.width
+this.width = 27
+this.height = 31
 this.rotation = rot
 this.position = new Vector2()
 this.position.Set(x, y)

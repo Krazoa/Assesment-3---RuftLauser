@@ -14,6 +14,8 @@ var Player = function()
     this.velocity.y = 0;
     this.width = 34;
     this.height = 22;
+    // this.offset = new Vector2();
+    // this.offset.Set(-55,-87);
     this.speed = 0;
     this.image.src = "ship.png";
     this.isDead = false;
@@ -26,6 +28,7 @@ Player.prototype.draw = function()
     context.restore();
 } 
 
+var cooldown = 1.2
 Player.prototype.update = function(deltaTime)
 {
     if(keyboard.isKeyDown(keyboard.KEY_UP) == true)
@@ -34,25 +37,28 @@ Player.prototype.update = function(deltaTime)
     }
     else if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true)
     {
-        this.position.y += 1.5
+        this.position.y += 2
     }
     
     if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
     {
-        this.position.x -= 1.5
+        this.position.x -= 3
     }
     else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true)
     {
-        this.position.x += 1.5
+        this.position.x += 3
     }
+    
+    cooldown -= deltaTime
     
     if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
     {
-        var cooldown = 3
-        cooldown -= deltaTime
         if(cooldown <= 0)
         {
-           //shoot bullet 
+            console.log(bullets.length)
+            var b = new Bullet(this.position.x + 12.5, this.position.y, 0);
+            bullets.push(b);
+            cooldown = 1.2
         }
     }
     
