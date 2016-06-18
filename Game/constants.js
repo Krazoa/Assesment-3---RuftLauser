@@ -81,7 +81,7 @@ var bullet_dmg = 40;
 //Array of Bullets
 var bullets = [];
 //Item array
-var Items = []; //Array braket that contains all the items on screen.
+var items = []; //Array braket that contains all the items on screen.
 //In-game Timer
 var GameTimer = 0;
 //Explosion Array

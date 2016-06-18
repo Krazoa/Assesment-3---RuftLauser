@@ -7,10 +7,10 @@ var SCREEN_HEIGHT = canvas.height;
 // PosX = X position of a killed enemy 
 // PosY = Y position of a killed enemy
 
-var Item = function(PosX, PosY)
+var Item = function(x, y)
 {
     this.position = new Vector2();
-    this.position.Set(PosX, PoxY);
+    this.position.Set(x, y);
     this.velocity = new Vector2();
     this.velocity = (0, 0);
     this.deployed = false; //this is to be set to true when the enemy is killed
@@ -21,7 +21,7 @@ Item.prototype.update = function(deltaTime)
     this.position.y -= 1;
     if(this.position.y > SCREEN_HEIGHT)
     {
-        //splice item from array
+        items[i].splice(i, 1)
     }
 
     //Checking Intersection between player or enemy.

@@ -16,6 +16,8 @@ this.position = new Vector2()
 this.position.Set(x, y)
 this.image.src = "enemy.png";
 }
+
+    var bulletcooldown = 0.3
 Enemy.prototype.update = function(deltaTime)
 {
     this.position.y += 2
@@ -27,6 +29,20 @@ Enemy.prototype.update = function(deltaTime)
             enemies.splice(j, 1);
         }
     }
+    
+    var bulletspawntime = Math.floor(Math.random()*10)
+    bulletcooldown -=deltaTime;
+    bulletspawntime -=deltaTime;
+    if(bulletcooldown <= 0)
+    {
+        if(bulletspawntime <= 0)
+        {
+            var b = new Bullet(this.position.x + 12.5, this.position.y, this.rotation + 180);
+            bullets.push(b);
+            bulletcooldown = 0.3
+        }
+    }
+    
 }
 Enemy.prototype.draw = function()
 {

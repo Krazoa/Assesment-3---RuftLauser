@@ -164,11 +164,22 @@ function runGameplay(deltaTime)
   
     if(keyboard.isKeyDown(keyboard.KEY_S) == true)
     {
+        //(vain) attempt to get explosion sprites working
         var g = new Explosion(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
         explosions.push(g);
     }
     
     if (lives == 1) 
+    {
+        Gamestate = Gamestate_over;
+    }
+    
+    if(player.isDead == true)
+    {
+        lives -= 1
+        Gamestate = Gamestate_death;
+    }
+    if(lives <= 1)
     {
         Gamestate = Gamestate_over;
     }
@@ -185,9 +196,11 @@ function runGameplay(deltaTime)
 function runGamevalreset(deltaTime)
 {
    reset_timer = 3;
-   Gamestate = Gamestate_reset
-   lives = 3;
+   Gamestate = Gamestate_play
    GameTimer = 0;
+   bullets.splice(0, bullets.length);
+   enemies.splice(0, enemies.length);
+   player.isDead = false
    
    //Testing variables reset
 //    test_timer = 10;
@@ -195,6 +208,24 @@ function runGamevalreset(deltaTime)
 function runGamedeath(deltaTime)
 {
     
+    addClouds(deltaTime)
+    
+        if(clouds.length > 1)
+    {
+        for(var i=0; i<clouds.length; i++)
+        {
+            clouds[i].update(deltaTime);
+            clouds[i].draw();
+        }
+    }
+    
+    context.fillStyle = "#000000";
+    context.font = "24px Arial";
+    context.fillText("Press R to respawn.", 100, SCREEN_HEIGHT/2 + 50)
+        if(keyboard.isKeyDown(keyboard.KEY_R) == true)
+    {
+        Gamestate = Gamestate_resetvalues;
+    }
 }
 
 function runGameWin(deltaTime)
@@ -225,12 +256,13 @@ function runGamereset(deltaTime)
     context.fillStyle = "#000000";
     context.font = "25px Agency FB";
     context.fillText("To Begin:", SCREEN_WIDTH/2 - 80, SCREEN_WIDTH/2)
-    
+   
     TitleCloud.draw();
+    lives = 3;
     
         context.fillStyle = "#0000000";
     context.font = "60px Agency FB";
-    context.fillText("Skies of Rcadia", SCREEN_WIDTH/2 - 190, SCREEN_HEIGHT/2)
+    context.fillText("RuftLauser", SCREEN_WIDTH/2 - 170, SCREEN_HEIGHT/2)
     
     context.fillStyle = "#000000";
     context.font = "25px Agency FB";
@@ -313,7 +345,17 @@ function RunBulletChecks(deltaTime)
                 hit = true;
                 //add kill to score/kill counter
                 score += 100;
-                kills += 1;
+                var itemdrop = Math.floor(Math.random()*4)
+                if(itemdrop == 1)
+                {
+                    var itemtype = math.floor(math.random()*2)
+                    if(itemtype == 1)
+                    {
+                        var i = new Item(x, y);
+                        items.push(c);
+                        Item.speedupPlayer()
+                    }
+                }
                 break;
             }
         }
@@ -326,6 +368,14 @@ function RunBulletChecks(deltaTime)
         if(bullets[i].x > SCREEN_WIDTH)
         {
             bullet.splice(i, 1);
+        }
+        
+        if(intersects(bullets[i].position.x, bullets[i].position.y, bullets[i].width, bullets[i].height, player.position.x, player.position.y, player.width, player.height) == true)
+        {
+            //remove the enemy
+            hit = true;
+            player.isDead = true
+            break;
         }
         
     }   
@@ -366,7 +416,7 @@ function initialize()
 function addEnemies(deltaTime)
 {
     //adding enemies
-    var spawnTime = Math.floor(Math.random() * 78)
+    var spawnTime = Math.floor(Math.random() * 30)
     spawnTime -= deltaTime;
     if(spawnTime <= 0)
     {
@@ -380,7 +430,7 @@ function addEnemies(deltaTime)
 }
 function addClouds(deltaTime)
 {
-    var cloudspawnTime = Math.floor(Math.random()*200)
+    var cloudspawnTime = Math.floor(Math.random()*43)
     cloudspawnTime -=deltaTime;
     if(cloudspawnTime <= 0)
     {

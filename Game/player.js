@@ -28,12 +28,12 @@ Player.prototype.draw = function()
     context.restore();
 } 
 
-var cooldown = 1.2
+var cooldown = 0.5
 Player.prototype.update = function(deltaTime)
 {
     if(keyboard.isKeyDown(keyboard.KEY_UP) == true)
     {
-        this.position.y -= 1.5
+        this.position.y -= 2
     }
     else if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true)
     {
@@ -42,11 +42,11 @@ Player.prototype.update = function(deltaTime)
     
     if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
     {
-        this.position.x -= 3
+        this.position.x -= 2.6
     }
     else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true)
     {
-        this.position.x += 3
+        this.position.x += 2.6
     }
     
     cooldown -= deltaTime
@@ -56,9 +56,9 @@ Player.prototype.update = function(deltaTime)
         if(cooldown <= 0)
         {
             console.log(bullets.length)
-            var b = new Bullet(this.position.x + 12.5, this.position.y, 0);
+            var b = new Bullet(this.position.x + 12.5, this.position.y - 3, 0);
             bullets.push(b);
-            cooldown = 1.2
+            cooldown = 0.5
         }
     }
     
