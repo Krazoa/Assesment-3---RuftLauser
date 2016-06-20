@@ -126,8 +126,11 @@ function runGameplay(deltaTime)
     {
         for(var i=0; i<enemies.length; i++)
         {
-            enemies[i].update(deltaTime);
-            //add collision check
+            enemies[i].update(deltaTime,i);
+            if (enemies[i].position.y > SCREEN_HEIGHT || enemies[i].position.x > SCREEN_WIDTH || enemies[i].position.x < 0 || enemies[i].position.y < -100) 
+            {
+                enemies.splice(i, i);
+            }
             enemies[i].draw();
         }
     }
@@ -140,7 +143,7 @@ function runGameplay(deltaTime)
             bullets[i].draw();
         }
     }
-    
+    //cloud intentional to let enemies hide behind it and hit the player unsuspectingly.
     if(clouds.length > 1)
     {
         for(var i=0; i<clouds.length; i++)
@@ -168,20 +171,28 @@ function runGameplay(deltaTime)
         var g = new Explosion(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
         explosions.push(g);
     }
-    
-    if (lives == 1) 
+    console.log(lives)
+    //debug kill player
+    if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true)
     {
-        Gamestate = Gamestate_over;
+        player.isDead = true
     }
     
     if(player.isDead == true)
     {
-        lives -= 1
-        Gamestate = Gamestate_death;
+        if(lives == 1)
+        {
+            Gamestate = Gamestate_over;
+        }
+        else
+        {
+            Gamestate = Gamestate_death;
+        }
     }
-    if(lives <= 1)
+    
+    if(score == 2000 && player.isdead == false)
     {
-        Gamestate = Gamestate_over;
+        Gamestate = Gamestate_win;
     }
   
 //   context.fillStyle = "#ffffff";
@@ -201,6 +212,8 @@ function runGamevalreset(deltaTime)
    bullets.splice(0, bullets.length);
    enemies.splice(0, enemies.length);
    player.isDead = false
+   player.position.x = SCREEN_WIDTH / 2
+   player.position.y = 415
    
    //Testing variables reset
 //    test_timer = 10;
@@ -222,8 +235,9 @@ function runGamedeath(deltaTime)
     context.fillStyle = "#000000";
     context.font = "24px Arial";
     context.fillText("Press R to respawn.", 100, SCREEN_HEIGHT/2 + 50)
-        if(keyboard.isKeyDown(keyboard.KEY_R) == true)
+    if(keyboard.isKeyDown(keyboard.KEY_R) == true)
     {
+        lives -= 1
         Gamestate = Gamestate_resetvalues;
     }
 }
@@ -235,7 +249,7 @@ function runGameWin(deltaTime)
     context.fillText("Press R to go back to restart.", 100, SCREEN_HEIGHT/2 + 50)
     if(keyboard.isKeyDown(keyboard.KEY_R) == true)
     {
-        Gamestate = Gamestate_resetvalues;
+        Gamestate = Gamestate_reset;
     }
 }
 
@@ -244,10 +258,10 @@ function runGameover(deltaTime)
 
     context.fillStyle = "#000000";
     context.font = "24px Agency FB";
-    context.fillText("Press R to restart.", 100, SCREEN_HEIGHT/2 + 50)
+    context.fillText("GAME OVER: R to go back to the start screen.", 100, SCREEN_HEIGHT/2 + 50)
     if(keyboard.isKeyDown(keyboard.KEY_R) == true)
     {
-        Gamestate = Gamestate_resetvalues;
+        Gamestate = Gamestate_reset;
     }
 }
 function runGamereset(deltaTime)
@@ -258,7 +272,6 @@ function runGamereset(deltaTime)
     context.fillText("To Begin:", SCREEN_WIDTH/2 - 80, SCREEN_WIDTH/2)
    
     TitleCloud.draw();
-    lives = 3;
     
         context.fillStyle = "#0000000";
     context.font = "60px Agency FB";
@@ -274,6 +287,9 @@ function runGamereset(deltaTime)
     }
     if(Enterstate == true)
     {
+        
+        lives = 3;
+        
         //this is a long and unresonably complex way of doing a single int counter
         //as rounding to 1 will fix the counter at the single intiger and cause it to freeze
         var RoundReset_timer = 3;
@@ -345,17 +361,17 @@ function RunBulletChecks(deltaTime)
                 hit = true;
                 //add kill to score/kill counter
                 score += 100;
-                var itemdrop = Math.floor(Math.random()*4)
-                if(itemdrop == 1)
-                {
-                    var itemtype = math.floor(math.random()*2)
-                    if(itemtype == 1)
-                    {
-                        var i = new Item(x, y);
-                        items.push(c);
-                        Item.speedupPlayer()
-                    }
-                }
+                // var itemdrop = Math.floor(Math.random()*4)
+                // if(itemdrop == 1)
+                // {
+                //     var itemtype = Math.floor(Math.random()*2)
+                //     if(itemtype == 1)
+                //     {
+                //         var i = new Item(x, y);
+                //         items.push(c);
+                //         Item.speedupPlayer()
+                //     }
+                // }
                 break;
             }
         }
