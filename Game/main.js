@@ -135,6 +135,7 @@ function runGameplay(deltaTime)
         }
     }
     
+    
     if(bullets.length > 1)
     {
         for(var i=0; i<bullets.length; i++)
