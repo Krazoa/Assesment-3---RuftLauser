@@ -18,17 +18,17 @@ this.image.src = "enemy.png";
 }
 
     var bulletcooldown = 0.3
-Enemy.prototype.update = function(deltaTime, i)
+Enemy.prototype.update = function(deltaTime)
 {
     this.position.y += 2
     
-    // for (var i = 0; i < enemies.length; i++) 
-    // {
-    //     if (this.position.y > SCREEN_HEIGHT || this.position.x > SCREEN_WIDTH || this.position.x < 0 || this.position.y < -100) 
-    //     {
-    //         enemies.splice(i, 1);
-    //     }
-    // }
+    if(this.position.y > SCREEN_HEIGHT || this.position.x > SCREEN_WIDTH || this.position.x < 0 || this.position.y < -100)
+    {
+        for(var j=0; j<enemies.length; j++)
+        {
+            enemies.splice(j, 1);
+        }
+    }
     
     var bulletspawntime = Math.floor(Math.random()*10)
     bulletcooldown -=deltaTime;
@@ -37,12 +37,9 @@ Enemy.prototype.update = function(deltaTime, i)
     {
         if(bulletspawntime <= 0)
         {
-        for (var i = 0; i < enemies.length; i++) 
-        {
             var b = new Bullet(this.position.x + 12.5, this.position.y, this.rotation + 180);
             bullets.push(b);
             bulletcooldown = 0.3
-        }
         }
     }
     

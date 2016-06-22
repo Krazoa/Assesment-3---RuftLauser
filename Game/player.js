@@ -55,7 +55,7 @@ Player.prototype.update = function(deltaTime)
     {
         if(cooldown <= 0)
         {
-            // console.log(bullets.length)
+            console.log(bullets.length)
             var b = new Bullet(this.position.x + 12.5, this.position.y - 3, 0);
             bullets.push(b);
             cooldown = 0.5
